@@ -1,8 +1,9 @@
 import numpy as np
 import os
 import itertools
+import sys
 
-def find_sgf_files(*dataset_dirs):
+def load_sgf(*dataset_dirs): #
     for dataset_dir in dataset_dirs:
         full_dir = os.path.join(os.getcwd(), dataset_dir)
         dataset_files = [os.path.join(full_dir, name) for name in os.listdir(full_dir)]
@@ -23,7 +24,7 @@ def split_test_training(positions_w_context, est_num_positions):
         return test_chunk, training_chunks
 
 def parse_data_sets(*data_sets):
-    sgf_files = list(find_sgf_files(*data_sets))
+    sgf_files = list(load_sgf(*data_sets))
     print("%s sgfs found." % len(sgf_files), file=sys.stderr)
     est_num_positions = len(sgf_files) * 200 # about 200 moves per game
     positions_w_context = itertools.chain(*map(get_positions_from_sgf, sgf_files))
