@@ -1,6 +1,7 @@
 import os
 import sys
 from extra_function import DataSet, parse_data_sets
+from policy import policy_network
 
 ### preprocess of input data, the file type is sgf
 def preprocess(*data_sets, processed_dir="processed_data"):
@@ -8,18 +9,8 @@ def preprocess(*data_sets, processed_dir="processed_data"):
     if not os.path.isdir(processed_dir):
         os.mkdir(processed_dir)
 
-    test_chunk, training_chunks = parse_data_sets(*data_sets)
-    print("Allocating %s positions as test; remainder as training" % len(test_chunk), file=sys.stderr)
+    test_chunk, training_chunks = get_data_sets(*data_sets)
+    return test_chunk, training_chunk
 
-    print("Writing test chunk")
-    test_dataset = DataSet.from_positions_w_context(test_chunk, is_test=True)
-    test_filename = os.path.join(processed_dir, "test.chunk.gz")
-    test_dataset.write(test_filename)
-
-    training_datasets = map(DataSet.from_positions_w_context, training_chunks)
-    for i, train_dataset in enumerate(training_datasets):
-        if i % 10 == 0:
-            print("Writing training chunk %s" % i)
-        train_filename = os.path.join(processed_dir, "train%s.chunk.gz" % i)
-        train_dataset.write(train_filename)
-    print("%s chunks written" % (i+1))
+model = policy_network(training_chunk)    #以后再写这里，我们先把特征都搞明白再说
+    pass
